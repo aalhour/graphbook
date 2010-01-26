@@ -1,0 +1,142 @@
+%%-----------------------------------------------------------------------%%
+%%--- Preamble ----------------------------------------------------------%%
+
+\documentclass[a4paper,twoside,12pt]{book}
+\usepackage[latin1]{inputenc}
+
+% For typesetting algorithms and pseudocode
+\usepackage[algochapter,boxed]{algorithm2e}
+\incmargin{1em}
+\decmargin{1em}
+\restylealgo{boxed}  % a box around the algorithm
+\Setnlsty{}{}{}      % don't bold the line numbers
+\linesnumbered
+\SetAlTitleFnt{}     % don't bold the text "Algorithm" in the caption
+\setalcapskip{5pt}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,url}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+\usepackage{makeidx}
+
+%% Customized corollary, lemma, theorem, etc. numbering
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+%% Package for drawing figures
+\usepackage{pstricks,pst-node}
+\usepackage{tikz}
+\usetikzlibrary{calc,matrix,arrows,decorations.pathreplacing,%
+  decorations.pathmorphing}
+
+\usepackage{listings}
+% For typesetting code listings
+\lstset{language={},
+  keepspaces=true,
+  xleftmargin=5mm,
+  xrightmargin=5mm,
+  basicstyle=\ttfamily,
+  frame=single,
+  framesep=2mm,
+  framerule=0pt,
+  % frameround=tttt,
+  columns=flexible,
+  backgroundcolor=\color[gray]{0.9},
+  rulesepcolor=\color{black},
+  % numbers=left,
+  numberstyle=\footnotesize,
+  language=Pascal
+}
+
+%% Customized page geometry
+\textwidth=450pt
+\textheight=700pt
+\topmargin=-30pt
+\oddsidemargin=0.0pt
+\evensidemargin=0.0pt
+
+%% Format date in the form 12 March 2007, for example.
+\usepackage{datetime}
+\newdateformat{auDateFormat}{%
+  \twodigit{\THEDAY}~\monthname[\THEMONTH]~\THEYEAR
+}
+\auDateFormat
+
+% Custom commands and shortcuts
+% the latest version of this document
+\newcommand{\documentEdition}{0.2}
+
+\makeindex
+
+
+%%-----------------------------------------------------------------------%%
+%%--- Document body -----------------------------------------------------%%
+
+\begin{document}
+
+\title{\Huge{\bf{Algorithmic Graph Theory}}}
+\author{\Large{David Joyner, Minh Van Nguyen}}
+\date{Version~\documentEdition}
+\maketitle
+
+
+%% Copyright page
+
+{\thispagestyle{empty}
+  \input{tex/notice.tex} \\\\
+  \textbf{Edition} \\
+  Version~\documentEdition \\
+  \today
+}
+
+\frontmatter
+% Setting the TOC depth: only list chapter and sections
+\setcounter{tocdepth}{1}
+\tableofcontents
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+
+\mainmatter
+
+%% Main document body
+
+\input{tex/introduction.tex}
+
+\input{tex/graph-algorithms.tex}
+
+\input{tex/trees-forests.tex}
+
+\input{tex/distance-connectivity.tex}
+
+\input{tex/optimal-traversals.tex}
+
+\input{tex/planar-graphs.tex}
+
+\input{tex/graph-coloring.tex}
+
+\input{tex/network-flows.tex}
+
+\input{tex/random-graphs.tex}
+
+
+%% Appendices
+
+\appendix
+\input{tex/license-gfdl.tex}
+
+%% Back matter
+
+\backmatter
+\bibliographystyle{bibliography.bst}
+\bibliography{bibliography.bib}
+\printindex
+
+\end{document}
