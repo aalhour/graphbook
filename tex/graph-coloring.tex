@@ -38,7 +38,7 @@ map using $k$ colors in such a way that no two neighboring states have the
 same color then we say the map has a $k$-coloring. 
 While a student in London in the mid-1800's, the South African mathematician
 Francis Guthrie conjectured to his mathematics professor 
-Augustus de Morgan that four colors suffice to color a map. 
+Augustus de Morgan that four colors suffice to color any map. 
 It was an open problem for over 100 years (only proven by Appel
 and Haken in 1976).
 
@@ -73,6 +73,42 @@ correspondence with the partitions of $V$ into $t$ independent sets.
 \index{color-class}
 \index{independent set}
 
+\begin{example}
+\label{example:graph-coloring:dyck-graph-example}
+The Dyck graph, shown in Figure \ref{fig:graph-coloring:dyck-graph-example},
+is a 3-regular graph with 32 vertices and 48 edges, 
+named after Walther von Dyck.
+
+It is Hamiltonian with 120 distinct Hamiltonian cycles. It has
+chromatic number 2 (in other words, is bipartite), 
+chromatic index 3, radius 5, diameter 5 and girth
+6. It is also a 3-vertex-connected and a 3-edge-connected graph.
+
+\begin{verbatim}
+
+sage: G = graphs.LCFGraph(32, [5,-5,13,-13], 8) 
+sage: G.is_bipartite()
+True
+sage: G.coloring()
+[[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31], 
+ [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]]
+sage: G.is_vertex_transitive()
+True
+
+\end{verbatim}
+
+
+\begin{figure}[!htbp]
+\centering
+\index{graph!Dyck}
+\includegraphics{image/graph-coloring/dyck-graph-example}
+\caption{A Dyck graph example.}
+\label{fig:graph-coloring:dyck-graph-example}
+\end{figure}
+
+\end{example}
+
+
 A {\it clique} in $G$ is a subset of the vertex set $S \subset V$, such that
 for every two vertices in $S$, there exists an edge connecting the two.
 The {\it clique number} $\omega (G)$ of a graph $G$ is the number of vertices 
@@ -101,7 +137,10 @@ maximum vertex degree,
 \]
 \end{theorem}
 
-proof 1:
+We give two proofs.
+
+\begin{proof}
+(proof 1)
 We prove this by induction on the number $n$ of vertices.
 
 It is obvious in the case $n=1$.
@@ -122,9 +161,11 @@ Case $1+\Delta(G-v) = 1+\Delta(G)$. In this case, the vertices adjacent to
 $v$ have been colored with at most $\Delta(G)$ colors, leaving us with
 at least one unused color. We can use that color for $v$.
 
-$\Box$
+\end{proof}
 
-proof 2: The fact that the graph coloring (decision) problem
+\begin{proof}
+(proof 2)
+The fact that the graph coloring (decision) problem
 is NP-complete must not prevent one from trying to 
 color it greedily. One such 
 method would be to iteratively pick, in a graph $G$, an uncolored 
@@ -135,10 +176,11 @@ use more than $\Delta(G)+1$ different
 colors (where $\Delta(G)$ is the maximal degree of $G$), as
 no vertex in the procedure will ever exclude more than 
 $\Delta(G)$ colors.
-
-$\Box$
+\end{proof}
 
 Such an greedy algorithm can be written in Sage in a few lines :
+
+\vskip .1in
 
 \begin{lstlisting}
 sage: g = graphs.RandomGNP(100,5/100)
@@ -148,6 +190,49 @@ sage: for u in g:
 ...      interdits = Set([color[v] for v in g.neighbors(u) if color.has_key(v)])
 ...      color[u] = min(C-interdits)
 \end{lstlisting}
+
+
+\begin{example}
+\label{example:graph-coloring:frucht-graph-vertex-coloring-example}
+A Frucht graph, 
+shown in Figure
+\ref{fig:graph-coloring:frucht-graph-vertex-coloring-example},
+has 12 nodes and 18 edges. It is $3$-regular, 
+planar and it is Hamiltonian. It is named after Robert Frucht.
+The Frucht graph has no nontrivial symmetries.
+It has chromatic number 3, chromatic index 3, radius 3, diameter 4 and
+girth 3. 
+It is3-vertex-connected and 3-edge-connected graph.
+
+
+
+\begin{verbatim}
+
+sage: G = graphs.FruchtGraph()
+sage: G.show(dpi=300)
+sage: vc = G.coloring()
+sage: G.chromatic_number()
+3
+sage: d = {'blue':vc[0], 'red':vc[1], 'green':vc[2]}
+sage: G.show(vertex_colors=d)       
+sage: G.automorphism_group().order()
+1
+
+\end{verbatim}
+
+
+
+\begin{figure}[!htbp]
+\centering
+\index{graph!Frucht}
+\includegraphics{image/graph-coloring/frucht-graph-vertex-coloring-example}
+\caption{Frucht graph vertex-coloring example.}
+\label{fig:graph-coloring:frucht-graph-vertex-coloring-example}
+\end{figure}
+
+\end{example}
+
+
 
 \begin{itemize}
 \item Brook's Theorem
@@ -169,9 +254,9 @@ If $G$ is not a complete graph and is not an odd cycle graph then
 \section{Edge coloring}
 
 Edge coloring is the direct application of vertex coloring to the 
-line graph of a graph $G$, written $L(G)$, which is the graph whose 
+line graph of a graph $G$. (Recall, $L(G)$ is the graph whose 
 vertices are the edges of $G$, two vertices being adjacent if and 
-only if their corresponding edges share an endpoint. 
+only if their corresponding edges share an endpoint). 
 We write $\chi_v(L(G)) = \chi_e(G)$ for the {\it chromatic index} of $G$.
 (This is also called the {\it edge chromatic number}.
 \index{chromatic!index}
@@ -179,10 +264,151 @@ We write $\chi_v(L(G)) = \chi_e(G)$ for the {\it chromatic index} of $G$.
 An {\it edge coloring} of a graph is an assignment of colors to 
 edges so that no vertex is
 incident to two edges of the same color. An edge coloring with 
-$k$ colors is called a $k$-edge-coloring. 
+$k$ colors is called a {\it $k$-edge-coloring}. 
+\index{edge coloring}
 
-In this special case, however, the optimization problem defined 
-above, though still NP-Complete, is much better understood through 
+\begin{example}
+\label{example:graph-coloring:heawood-graph-example}
+The Heawood graph, shown in Figure
+\ref{fig:graph-coloring:heawood-graph-vertex-coloring-example},
+is an undirected graph with $14$ vertices and $21$ edges, named after
+Percy John Heawood.
+It is a $3$-regular, distance-transitive, distance-regular graph.
+It has chromatic number $2$ and chromatic index $3$.
+An edge-coloring is shown in Figure
+\ref{fig:graph-coloring:heawood-graph-edge-coloring-example}.
+A vertex-coloring is shown in Figure
+\ref{fig:graph-coloring:heawood-graph-vertex-coloring-example}.
+
+Recall, a graph is vertex-transitive if its automorphism 
+group acts transitively upon its vertices. 
+
+The automorphism group of the Heawood graph is isomorphic to the
+projective linear group $PGL2(7)$, a group of order $336$. It acts
+transitively on the vertices and on the edges of the
+graph. Therefore, this graph is vertex-transitive.
+\index{Heawood graph}
+
+\begin{verbatim}
+
+sage: G = graphs.HeawoodGraph()
+sage: ec = edge_coloring(G)
+sage: d = {'blue':ec[0], 'green':ec[1], 'red':ec[2]}
+sage: G.show(edge_colors = d)
+sage: G.line_graph().chromatic_number()  # chromatic index
+3
+
+\end{verbatim}
+
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale=0.7]{image/graph-coloring/heawood-graph-edge-coloring-example}
+\caption{The Heawood graph and an edge-coloring example.}
+\label{fig:graph-coloring:heawood-graph-edge-coloring-example}
+\end{figure}
+
+
+\begin{verbatim}
+
+sage: G = graphs.HeawoodGraph()
+sage: vc = G.coloring()
+sage: vc
+[[1, 3, 5, 7, 9, 11, 13], [0, 2, 4, 6, 8, 10, 12]]
+sage: d = {'blue':vc[0], 'red':vc[1]}
+sage: G.show(vertex_colors = d)       
+sage: G.chromatic_number()
+2
+
+\end{verbatim}
+
+
+\begin{figure}[!htbp]
+\centering
+\index{graph!Heawood}
+\includegraphics[scale=0.7]{image/graph-coloring/heawood-graph-vertex-coloring-example}
+\caption{The Heawood graph and an vertex-coloring example.}
+\label{fig:graph-coloring:heawood-graph-vertex-coloring-example}
+\end{figure}
+
+
+\end{example}
+
+
+\begin{example}
+\label{example:graph-coloring:icosahedral-graph-vertex-coloring-example}
+The Icosahedral graph, shown in Figure 
+\ref{fig:graph-coloring:icosahedral-graph-vertex-coloring-example},
+is a particular projection of the edges of the solid icosahedron
+onto the plane. It is a $4$-regular graph with $30$ edges and $12$ vertices.
+It has chromatic number $4$ and chromatic index $5$.
+An edge-coloring is shown in Figure
+\ref{fig:graph-coloring:icosahedral-graph-edge-coloring-example}.
+A vertex-coloring is shown in Figure
+\ref{fig:graph-coloring:icosahedral-graph-vertex-coloring-example}.
+
+\begin{verbatim}
+
+sage: G = graphs.IcosahedralGraph()
+sage: G.chromatic_number()
+4
+sage: vc = G.coloring()
+sage: d = {'blue':vc[0], 'red':vc[1], 'green':vc[2],'orange':vc[3]}
+sage: G.show(vertex_colors = d)
+
+\end{verbatim}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale=0.7]{image/graph-coloring/icosahedral-graph-vertex-coloring-example}
+\caption{An icosahedral graph vertex-coloring example.}
+\label{fig:graph-coloring:icosahedral-graph-vertex-coloring-example}
+\end{figure}
+
+\begin{verbatim}
+
+sage: G.is_hamiltonian()
+True
+sage: G.is_regular()    
+True
+sage: G.is_vertex_transitive()
+True
+sage: G.is_perfect()          
+False
+sage: G.is_planar() 
+True
+sage: G.is_clique()
+False
+sage: G.is_bipartite()
+False
+
+\end{verbatim}
+
+
+\begin{verbatim}
+
+sage: G.line_graph().chromatic_number()
+5
+sage: ec = edge_coloring(G)
+sage: d = {'blue':ec[0], 'red':ec[1], 'green':ec[2],'orange':ec[3],'yellow':ec[4]}
+sage: G.show(edge_colors = d)
+
+\end{verbatim}
+
+
+\begin{figure}[!htbp]
+\centering
+\index{graph!icosahedral}
+\includegraphics[scale=0.7]{image/graph-coloring/icosahedral-graph-edge-coloring-example}
+\caption{An icosahedral graph edge-coloring example.}
+\label{fig:graph-coloring:icosahedral-graph-edge-coloring-example}
+\end{figure}
+
+\end{example}
+
+
+As in the case of vertex-coloring, the edge-coloring decision problem is 
+still NP-complete. However, it is much better understood through 
 Vizing's theorem.
 
 \begin{theorem}
@@ -194,15 +420,73 @@ $\Delta(G)$ colors and at most $\Delta(G)+1$,
 \Delta(G)\leq \chi_e(G)\leq \Delta(G)+1.
 \]
 \end{theorem}
+\index{Vizing's theorem}
 
 Notice that the lower bound can be easily proved : if a vertex 
 $v$ has a degree $d(v)$, then at least $d(v)$ colors are required 
 to color $G$ as all the edges incident to $v$ must receive 
-different colors. Besides, the upper bound of $\Delta(G)+1$ 
-can not be deduced from the greedy algorithm given in the 
-previous section, as the maximal degree of $L(G)$ is not equal to 
+different colors. 
+
+Note the upper bound of $\Delta(G)+1$ 
+cannot be deduced from the greedy algorithm given in the 
+previous section, as the maximal degree of the line graph
+$L(G)$ is not equal to 
 $\Delta(G)$ but to $\displaystyle \max_{u\sim v}d(u)+d(v)-2$, which 
 can reach $2\Delta(G)-2$ in regular graphs.
+
+
+\begin{example}
+\label{example:graph-coloring:pappas-graph-edge-coloring-example}
+The Pappus graph, shown in Figure
+\ref{fig:graph-coloring:pappas-graph-edge-coloring-example},
+ is $3$-regular, symmetric, and distance-regular with 18 vertices and
+27 edges, named after Pappus of Alexandria.
+The Pappus graph has girth 6, diameter 4, radius 4, chromatic number
+2 (i.e., is bipartite), 
+chromatic index 3 and is both 3-vertex-connected and 3-edge-connected.
+
+{\small{
+\begin{verbatim}
+
+sage: G = graphs.PappusGraph()
+sage: G.coloring()
+[[1, 3, 5, 6, 8, 10, 12, 14, 16], [0, 2, 4, 7, 9, 11, 13, 15, 17]]
+sage: G.is_regular()
+True
+sage: G.is_planar()
+False
+sage: G.is_vertex_transitive()
+True
+sage: G.is_hamiltonian()
+True
+sage: G.girth()
+6
+sage: G.is_bipartite()
+True
+sage: G.show(dpi=300)
+sage: G.line_graph().chromatic_number()
+3
+sage: ec = edge_coloring(G)
+sage: ec
+[[(0, 1), (2, 3), (4, 5), (6, 17), (7, 14), (8, 13), (9, 16), (10, 15), (11, 12)], 
+ [(0, 5), (1, 2), (3, 4), (6, 13), (7, 12), (8, 15), (9, 14), (10, 17), (11, 16)], 
+ [(0, 6), (1, 7), (2, 8), (3, 9), (4, 10), (5, 11), (12, 15), (13, 16), (14, 17)]]
+sage: d = {'blue':ec[0], 'red':ec[1], 'green':ec[2]}
+sage: G.plot(edge_colors = d).show()
+
+\end{verbatim}
+}}
+
+\begin{figure}[!htbp]
+\centering
+\index{graph!Pappas}
+\includegraphics[scale=0.7]{image/graph-coloring/pappas-graph-edge-coloring-example}
+\caption{A Pappas graph edge-coloring example.}
+\label{fig:graph-coloring:pappas-graph-edge-coloring-example}
+\end{figure}
+
+\end{example}
+
 
 
 \begin{itemize}
@@ -233,22 +517,21 @@ If $m_k(G)$ denotes the number of distinct partitions of $V$
 into $k$ different color-classes then
 
 \[
-P_G(t) = \sum{k=1}^n m_k(G)t_{(k)}.
+P_G(t) = \sum_{k=1}^n m_k(G)t_{(k)}.
 \]
 \end{lemma}
 
 \index{chromatic!polynomial}
 
-proof
-
+\begin{proof}
 Given a partition of $V$ into $k$ color-classes, we can assign 
 $t$ colors to the color-classes in $t(t-1)\dots (t-k+1)=t_{(k)}$ ways.
 For each $k$ with $1\leq k\leq n$, there are
 $m_k(G)$ distinct partitions of $V$ into $k$ such color-classes.
 Therefore, the number of colorings with $t$ colors is 
-$ \sum{k=1}^n m_k(G)t_{(k)},$ as desired.
+$ \sum_{k=1}^n m_k(G)t_{(k)},$ as desired.
 
-$\Box$
+\end{proof}
 
 
 
@@ -257,21 +540,20 @@ A graph $G$ with $n$ vertices is a tree if and only if $P(G, t) =
 t(t-1)^{n-1}$.
 \end{theorem}
 
-proof
-
+\begin{proof}
 We prove this by induction on $n$. The statement is clearly
 true when $n=1$. 
 
 Assume the statement holds for any tree of $n-1$ vertices
 and let $G$ be a tree with $n$ vertices. There is a vertex $v$ 
-of $G$ having degree $1$. The grap $G-v$ is a tree having $n-1$
+of $G$ having degree $1$. The graph $G-v$ is a tree having $n-1$
 vertices, so has $t(t-1)^{n-2}$ $t$-colorings. The number of 
 $t$-colorings of $G$ is the number of $t$-colorings of $G-v$ times the
 number of ways to color $v$. Since we may color $v$ using any
 color not used for its one neighbor, there are $t-1$ colorings of $v$.
 Therefore, $G$ has $t(t-1)^{n-1}$ $t$-colorings. 
 
-$\Box$
+\end{proof}
 
 The theorem above gives examples of non-isomorphic graphs which have
 the same chromatic polynomial.
@@ -413,7 +695,7 @@ The minimum number of hours required for the schedule of meetings in
 our scheduling problem is $\chi_v(G)$.
 \end{theorem}
 
-proof
+\begin{proof}
 
 Suppose we can schedule the meetings in $k$ hours. In other words,
 each person attends the meetings they need to and they
@@ -437,12 +719,22 @@ person in common. Therefore, the minimum number of
 hours requires for the meeting schedule is less than 
 or equal to $\chi_v(G)$.
 
-$\Box$
+\end{proof}
 
-{\bf Exercise}:
+\begin{problem}
+\item
 What is the number of hours required for a schedule
 in Example \ref{example:coloring}?
 % Ans: 4
+\item
+Draw the Dyck graph in Example \ref{example:graph-coloring:dyck-graph-example}
+as a bipartite graph.
+
+\item
+Draw the Pappas graph in Example 
+\ref{example:graph-coloring:pappas-graph-edge-coloring-example}
+as a bipartite graph.
+\end{problem}
 
 \subsection{Map coloring}
 
